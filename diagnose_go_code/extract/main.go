@@ -9,7 +9,7 @@ import (
 
 func main() {
 
-	csvfile, err := os.Open("../../csv_files/test.csv")
+	csvfile, err := os.Open("../csv_files/test.csv")
 	if err != nil {
 		log.Fatalln("Couldn't open the csv file", err)
 	}
@@ -17,7 +17,7 @@ func main() {
 
 	r := csv.NewReader(csvfile)
 
-	txtfile, err := os.OpenFile("../../csv_files/test.txt", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0600)
+	txtfile, err := os.OpenFile("../csv_files/test.txt", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0600)
 	if err != nil {
 		log.Fatal(err)
 	}
