@@ -1,3 +1,4 @@
+//It's an ETL extracts from CSV only column 4 and 5, that is in our interest
 package main
 
 import (
@@ -18,13 +19,13 @@ func main() {
 
 	r := csv.NewReader(csvfile)
 
-	txtfile, err := os.OpenFile("../csv_files/test.txt", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0600)
+	txtfile, err := os.OpenFile("../csv_files/bench_test.txt", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0600)
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer txtfile.Close()
 
-	i, s := 0, 0
+	i, s, n := 0, 0, 0
 	ID := ""
 
 	for {
@@ -35,12 +36,18 @@ func main() {
 		if err != nil {
 			log.Fatal(err)
 		}
+		/*
+		   //used to create bench file
+		   	if n == 10000 {
+		   		break
+		   	}
+		*/
 
-		ID = record[3]
+		ID = record[4]
 
 		switch {
 		case i == 40:
-			split := strings.SplitN(record[3], "", 4)
+			split := strings.SplitN(record[4], "", 4)
 			ID = split[0] + " " + split[1] + " " + split[2] + " " + split[3]
 			i = 0
 		case s == 143:
@@ -48,8 +55,9 @@ func main() {
 			s = 0
 		}
 
-		txtfile.WriteString(ID + "#" + record[4] + "\n")
+		txtfile.WriteString(ID + "#" + record[5] + "\n")
 		i++
 		s++
+		n++
 	}
 }
