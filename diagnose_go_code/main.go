@@ -13,6 +13,7 @@ import (
 	"io"
 	"log"
 	"os"
+	"runtime/trace"
 	"strings"
 
 	"github.com/Danr17/dev-state_blog_code/tree/master/diagnose_go_code/luhn"
@@ -28,6 +29,17 @@ type Region struct {
 }
 
 func main() {
+
+	/*
+	tracefile, err := os.OpenFile("m.trace", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0600)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer tracefile.Close()
+
+	trace.Start(tracefile)
+	defer trace.Stop()
+	*/
 
 	file, err := os.Open("csv_files/test.txt")
 	if err != nil {
