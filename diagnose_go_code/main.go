@@ -93,6 +93,6 @@ func main() {
 	}
 
 	fmt.Printf("There are %d, out of %d, valid Luhn numbers. \n", validLuhn, nr)
-	fmt.Printf("%s has the biggest # of visitors, with a %d of hits. \n", hitsCountry, hits)
+	fmt.Printf("%s has the biggest # of visitors, with %d of hits. \n", hitsCountry, hits)
 	fmt.Printf("%s is the continent with most unique countries that accessed the site more than 100 times. It has %d unique countries. \n", hitsContinent, hitsR)
 }

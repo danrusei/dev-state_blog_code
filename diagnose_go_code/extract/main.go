@@ -5,6 +5,7 @@ import (
 	"io"
 	"log"
 	"os"
+	"strings"
 )
 
 func main() {
@@ -23,6 +24,9 @@ func main() {
 	}
 	defer txtfile.Close()
 
+	i, s := 0, 0
+	ID := ""
+
 	for {
 		record, err := r.Read()
 		if err == io.EOF {
@@ -32,6 +36,20 @@ func main() {
 			log.Fatal(err)
 		}
 
-		txtfile.WriteString(record[3] + "#" + record[4] + "\n")
+		ID = record[3]
+
+		switch {
+		case i == 40:
+			split := strings.SplitN(record[3], "", 4)
+			ID = split[0] + " " + split[1] + " " + split[2] + " " + split[3]
+			i = 0
+		case s == 143:
+			ID = "2334" + "$" + "1126677" + "notvalid"
+			s = 0
+		}
+
+		txtfile.WriteString(ID + "#" + record[4] + "\n")
+		i++
+		s++
 	}
 }
