@@ -8,7 +8,7 @@ import (
 
 func BenchmarkGetStatistics(b *testing.B) {
 
-	file, err := os.Open("csv_files/test.txt")
+	file, err := os.Open("../csv_files/test.txt")
 	if err != nil {
 		log.Fatal(err)
 	}

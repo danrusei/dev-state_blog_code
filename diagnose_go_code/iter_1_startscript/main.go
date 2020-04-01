@@ -18,14 +18,7 @@ import (
 	"github.com/Danr17/dev-state_blog_code/tree/master/diagnose_go_code/luhn"
 )
 
-var validLuhn int64
-var nr int64
-
 //Region struct is used to Unmarshal the extracted JSON
-type Region struct {
-	Continent string `json:"continent"`
-	Country   string `json:"country"`
-}
 
 func main() {
 
@@ -40,14 +33,61 @@ func main() {
 		defer trace.Stop()
 	*/
 
-	file, err := os.Open("csv_files/test.txt")
+	file, err := os.Open("../csv_files/test.txt")
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer file.Close()
 
-	countries, continents := getStatistics(file)
+	validLuhn, nr, hitsCountry, hits, hitsContinent, hitsR := getStatistics(file)
 
+	fmt.Printf("There are %d, out of %d, valid Luhn numbers. \n", validLuhn, nr)
+	fmt.Printf("%s has the biggest # of visitors, with %d of hits. \n", hitsCountry, hits)
+	fmt.Printf("%s is the continent with most unique countries that accessed the site more than 1000 times. It has %d unique countries. \n", hitsContinent, hitsR)
+
+}
+
+func getStatistics(stream io.Reader) (int, int, string, int, string, int) {
+
+	var validLuhn int
+	var nr int
+
+	type region struct {
+		Continent string `json:"continent"`
+		Country   string `json:"country"`
+	}
+
+	countries := map[string]int{}
+	continents := map[string]string{}
+
+	scanner := bufio.NewScanner(stream)
+	for scanner.Scan() {
+		nr++
+
+		text := scanner.Text()
+
+		split := strings.Split(text, "#")
+		number := strings.TrimSpace(split[0])
+		description := strings.TrimSpace(split[1])
+
+		if luhn.Valid(number) {
+			validLuhn++
+		}
+
+		var reg region
+
+		err := json.Unmarshal([]byte(description), &reg)
+		if err != nil {
+			log.Println(err)
+		}
+
+		countries[reg.Country]++
+
+		if _, ok := continents[reg.Country]; !ok {
+			continents[reg.Country] = reg.Continent
+		}
+
+	}
 	hits := 0
 	hitsCountry := ""
 	for k, v := range countries {
@@ -72,44 +112,5 @@ func main() {
 			hitsR = v
 		}
 	}
-
-	fmt.Printf("There are %d, out of %d, valid Luhn numbers. \n", validLuhn, nr)
-	fmt.Printf("%s has the biggest # of visitors, with %d of hits. \n", hitsCountry, hits)
-	fmt.Printf("%s is the continent with most unique countries that accessed the site more than 1000 times. It has %d unique countries. \n", hitsContinent, hitsR)
-
-}
-
-func getStatistics(stream io.Reader) (map[string]int, map[string]string) {
-	countries := map[string]int{}
-	continents := map[string]string{}
-
-	scanner := bufio.NewScanner(stream)
-	for scanner.Scan() {
-		nr++
-
-		text := scanner.Text()
-
-		split := strings.Split(text, "#")
-		number := strings.TrimSpace(split[0])
-		description := strings.TrimSpace(split[1])
-
-		if luhn.Valid(number) {
-			validLuhn++
-		}
-
-		var reg Region
-
-		err := json.Unmarshal([]byte(description), &reg)
-		if err != nil {
-			log.Println(err)
-		}
-
-		countries[reg.Country]++
-
-		if _, ok := continents[reg.Country]; !ok {
-			continents[reg.Country] = reg.Continent
-		}
-
-	}
-	return countries, continents
+	return validLuhn, nr, hitsCountry, hits, hitsContinent, hitsR
 }
