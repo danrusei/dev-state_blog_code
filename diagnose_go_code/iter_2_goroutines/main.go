@@ -15,7 +15,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/Danr17/dev-state_blog_code/tree/master/diagnose_go_code/luhn"
+	"github.com/Danr17/dev-state_blog_code/tree/master/diagnose_go_code/iter_2_startscript/luhn"
 )
 
 //Region struct is used to Unmarshal the extracted JSON
