@@ -13,9 +13,11 @@ import (
 	"io"
 	"log"
 	"os"
+	"runtime"
 	"strings"
+	"sync"
 
-	"github.com/Danr17/dev-state_blog_code/tree/master/diagnose_go_code/iter_2_startscript/luhn"
+	"github.com/Danr17/dev-state_blog_code/tree/master/diagnose_go_code/iter_2_goroutines/luhn"
 )
 
 //Region struct is used to Unmarshal the extracted JSON
@@ -39,7 +41,9 @@ func main() {
 	}
 	defer file.Close()
 
-	validLuhn, nr, hitsCountry, hits, hitsContinent, hitsR := getStatistics(file)
+	routines := runtime.NumCPU() + 1
+
+	validLuhn, nr, hitsCountry, hits, hitsContinent, hitsR := getStatistics(file, routines)
 
 	fmt.Printf("There are %d, out of %d, valid Luhn numbers. \n", validLuhn, nr)
 	fmt.Printf("%s has the biggest # of visitors, with %d of hits. \n", hitsCountry, hits)
@@ -47,47 +51,64 @@ func main() {
 
 }
 
-func getStatistics(stream io.Reader) (int, int, string, int, string, int) {
+func getStatistics(stream io.Reader, routines int) (int, int, string, int, string, int) {
 
-	var validLuhn int
-	var nr int
+	validLuhn := 0
+	nr := 0
+	countries := map[string]int{}
+	continents := map[string]string{}
+
+	mutex := sync.Mutex{}
+	wg := sync.WaitGroup{}
+	lines := make(chan string, 2*routines)
 
 	type region struct {
 		Continent string `json:"continent"`
 		Country   string `json:"country"`
 	}
 
-	countries := map[string]int{}
-	continents := map[string]string{}
+	for i := 0; i < 2*routines; i++ {
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+
+			for text := range lines {
+
+				split := strings.Split(text, "#")
+				number := strings.TrimSpace(split[0])
+				description := strings.TrimSpace(split[1])
+
+				if luhn.Valid(number) {
+					validLuhn++
+				}
+
+				var reg region
+
+				err := json.Unmarshal([]byte(description), &reg)
+				if err != nil {
+					log.Println(err)
+				}
+
+				mutex.Lock()
+				countries[reg.Country]++
+
+				if _, ok := continents[reg.Country]; !ok {
+					continents[reg.Country] = reg.Continent
+				}
+				mutex.Unlock()
+			}
+		}()
+	}
 
 	scanner := bufio.NewScanner(stream)
 	for scanner.Scan() {
 		nr++
-
-		text := scanner.Text()
-
-		split := strings.Split(text, "#")
-		number := strings.TrimSpace(split[0])
-		description := strings.TrimSpace(split[1])
-
-		if luhn.Valid(number) {
-			validLuhn++
-		}
-
-		var reg region
-
-		err := json.Unmarshal([]byte(description), &reg)
-		if err != nil {
-			log.Println(err)
-		}
-
-		countries[reg.Country]++
-
-		if _, ok := continents[reg.Country]; !ok {
-			continents[reg.Country] = reg.Continent
-		}
-
+		lines <- scanner.Text()
 	}
+
+	close(lines)
+	wg.Wait()
+
 	hits := 0
 	hitsCountry := ""
 	for k, v := range countries {
