@@ -20,7 +20,14 @@ import (
 	"github.com/Danr17/dev-state_blog_code/tree/master/diagnose_go_code/iter_2_goroutines/luhn"
 )
 
-//Region struct is used to Unmarshal the extracted JSON
+type result struct {
+	validLuhn     int
+	nr            int
+	hitsCountry   string
+	hits          int
+	hitsContinent string
+	hitsR         int
+}
 
 func main() {
 
@@ -41,33 +48,32 @@ func main() {
 	}
 	defer file.Close()
 
-	routines := runtime.NumCPU() + 1
+	results := result{}
+	routines := runtime.NumCPU() * 2
+	results.getStatistics(file, routines)
 
-	validLuhn, nr, hitsCountry, hits, hitsContinent, hitsR := getStatistics(file, routines)
-
-	fmt.Printf("There are %d, out of %d, valid Luhn numbers. \n", validLuhn, nr)
-	fmt.Printf("%s has the biggest # of visitors, with %d of hits. \n", hitsCountry, hits)
-	fmt.Printf("%s is the continent with most unique countries that accessed the site more than 1000 times. It has %d unique countries. \n", hitsContinent, hitsR)
+	fmt.Printf("There are %d, out of %d, valid Luhn numbers. \n", results.validLuhn, results.nr)
+	fmt.Printf("%s has the biggest # of visitors, with %d of hits. \n", results.hitsCountry, results.hits)
+	fmt.Printf("%s is the continent with most unique countries that accessed the site more than 1000 times. It has %d unique countries. \n", results.hitsContinent, results.hitsR)
 
 }
 
-func getStatistics(stream io.Reader, routines int) (int, int, string, int, string, int) {
+func (r *result) getStatistics(stream io.Reader, routines int) {
 
-	validLuhn := 0
-	nr := 0
-	countries := map[string]int{}
-	continents := map[string]string{}
-
-	mutex := sync.Mutex{}
-	wg := sync.WaitGroup{}
-	lines := make(chan string, 2*routines)
-
+	//region struct is used to Unmarshal the JSON
 	type region struct {
 		Continent string `json:"continent"`
 		Country   string `json:"country"`
 	}
 
-	for i := 0; i < 2*routines; i++ {
+	countries := map[string]int{}
+	continents := map[string]string{}
+
+	mutex := sync.Mutex{}
+	wg := sync.WaitGroup{}
+	lines := make(chan string, routines)
+
+	for i := 0; i < routines; i++ {
 		wg.Add(1)
 		go func() {
 			defer wg.Done()
@@ -79,11 +85,12 @@ func getStatistics(stream io.Reader, routines int) (int, int, string, int, strin
 				description := strings.TrimSpace(split[1])
 
 				if luhn.Valid(number) {
-					validLuhn++
+					mutex.Lock()
+					r.validLuhn++
+					mutex.Unlock()
 				}
 
 				var reg region
-
 				err := json.Unmarshal([]byte(description), &reg)
 				if err != nil {
 					log.Println(err)
@@ -102,19 +109,17 @@ func getStatistics(stream io.Reader, routines int) (int, int, string, int, strin
 
 	scanner := bufio.NewScanner(stream)
 	for scanner.Scan() {
-		nr++
+		r.nr++
 		lines <- scanner.Text()
 	}
 
 	close(lines)
 	wg.Wait()
 
-	hits := 0
-	hitsCountry := ""
 	for k, v := range countries {
-		if v > hits {
-			hits = v
-			hitsCountry = k
+		if v > r.hits {
+			r.hits = v
+			r.hitsCountry = k
 		}
 	}
 
@@ -125,13 +130,11 @@ func getStatistics(stream io.Reader, routines int) (int, int, string, int, strin
 		}
 	}
 
-	hitsR := 1
-	hitsContinent := ""
+	r.hitsR = 1
 	for k, v := range regions {
-		if v > hitsR {
-			hitsContinent = k
-			hitsR = v
+		if v > r.hitsR {
+			r.hitsContinent = k
+			r.hitsR = v
 		}
 	}
-	return validLuhn, nr, hitsCountry, hits, hitsContinent, hitsR
 }

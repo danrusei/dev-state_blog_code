@@ -18,7 +18,14 @@ import (
 	"github.com/Danr17/dev-state_blog_code/tree/master/diagnose_go_code/iter_1_startscript/luhn"
 )
 
-//Region struct is used to Unmarshal the extracted JSON
+type result struct {
+	validLuhn     int
+	nr            int
+	hitsCountry   string
+	hits          int
+	hitsContinent string
+	hitsR         int
+}
 
 func main() {
 
@@ -39,19 +46,18 @@ func main() {
 	}
 	defer file.Close()
 
-	validLuhn, nr, hitsCountry, hits, hitsContinent, hitsR := getStatistics(file)
+	results := result{}
+	results.getStatistics(file)
 
-	fmt.Printf("There are %d, out of %d, valid Luhn numbers. \n", validLuhn, nr)
-	fmt.Printf("%s has the biggest # of visitors, with %d of hits. \n", hitsCountry, hits)
-	fmt.Printf("%s is the continent with most unique countries that accessed the site more than 1000 times. It has %d unique countries. \n", hitsContinent, hitsR)
+	fmt.Printf("There are %d, out of %d, valid Luhn numbers. \n", results.validLuhn, results.nr)
+	fmt.Printf("%s has the biggest # of visitors, with %d of hits. \n", results.hitsCountry, results.hits)
+	fmt.Printf("%s is the continent with most unique countries that accessed the site more than 1000 times. It has %d unique countries. \n", results.hitsContinent, results.hitsR)
 
 }
 
-func getStatistics(stream io.Reader) (int, int, string, int, string, int) {
+func (r *result) getStatistics(stream io.Reader) {
 
-	var validLuhn int
-	var nr int
-
+	//region struct is used to Unmarshal the JSON
 	type region struct {
 		Continent string `json:"continent"`
 		Country   string `json:"country"`
@@ -62,7 +68,7 @@ func getStatistics(stream io.Reader) (int, int, string, int, string, int) {
 
 	scanner := bufio.NewScanner(stream)
 	for scanner.Scan() {
-		nr++
+		r.nr++
 
 		text := scanner.Text()
 
@@ -71,11 +77,10 @@ func getStatistics(stream io.Reader) (int, int, string, int, string, int) {
 		description := strings.TrimSpace(split[1])
 
 		if luhn.Valid(number) {
-			validLuhn++
+			r.validLuhn++
 		}
 
 		var reg region
-
 		err := json.Unmarshal([]byte(description), &reg)
 		if err != nil {
 			log.Println(err)
@@ -88,12 +93,10 @@ func getStatistics(stream io.Reader) (int, int, string, int, string, int) {
 		}
 
 	}
-	hits := 0
-	hitsCountry := ""
 	for k, v := range countries {
-		if v > hits {
-			hits = v
-			hitsCountry = k
+		if v > r.hits {
+			r.hits = v
+			r.hitsCountry = k
 		}
 	}
 
@@ -104,13 +107,11 @@ func getStatistics(stream io.Reader) (int, int, string, int, string, int) {
 		}
 	}
 
-	hitsR := 1
-	hitsContinent := ""
+	r.hitsR = 1
 	for k, v := range regions {
-		if v > hitsR {
-			hitsContinent = k
-			hitsR = v
+		if v > r.hitsR {
+			r.hitsContinent = k
+			r.hitsR = v
 		}
 	}
-	return validLuhn, nr, hitsCountry, hits, hitsContinent, hitsR
 }

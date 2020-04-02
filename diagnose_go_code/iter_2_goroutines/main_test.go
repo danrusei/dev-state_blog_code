@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"os"
+	"runtime"
 	"testing"
 )
 
@@ -16,7 +17,10 @@ func BenchmarkGetStatistics(b *testing.B) {
 
 	b.ResetTimer()
 
+	results := result{}
+	routines := runtime.NumCPU() * 2
+
 	for i := 0; i < b.N; i++ {
-		getStatistics(file)
+		results.getStatistics(file, routines)
 	}
 }

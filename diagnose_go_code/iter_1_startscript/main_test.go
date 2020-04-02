@@ -16,7 +16,9 @@ func BenchmarkGetStatistics(b *testing.B) {
 
 	b.ResetTimer()
 
+	results := result{}
+
 	for i := 0; i < b.N; i++ {
-		getStatistics(file)
+		results.getStatistics(file)
 	}
 }
