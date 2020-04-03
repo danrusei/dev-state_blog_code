@@ -49,7 +49,7 @@ func main() {
 	defer file.Close()
 
 	results := result{}
-	routines := runtime.NumCPU() * 2
+	routines := runtime.NumCPU()
 	results.getStatistics(file, routines)
 
 	fmt.Printf("There are %d, out of %d, valid Luhn numbers. \n", results.validLuhn, results.nr)
@@ -74,12 +74,13 @@ func (r *result) getStatistics(stream io.Reader, routines int) {
 
 	const CacheSize = 64 * 1024
 
-	type CacheLines struct {
-		buf [CacheSize]string
-		pos int
+	linesPool := sync.Pool{
+		New: func() interface{} {
+			return new([CacheSize]string)
+		},
 	}
 
-	lines := make(chan [CacheSize]string, routines)
+	lines := make(chan *[CacheSize]string, routines)
 
 	for i := 0; i < routines; i++ {
 		wg.Add(1)
@@ -118,20 +119,30 @@ func (r *result) getStatistics(stream io.Reader, routines int) {
 				mutex.Lock()
 				r.validLuhn += validLuhn
 				mutex.Unlock()
+
+				linesPool.Put(cache)
 			}
 		}()
 	}
 
-	cache := CacheLines{}
 	scanner := bufio.NewScanner(stream)
-	for scanner.Scan() {
-		r.nr++
-		cache.buf[cache.pos] = scanner.Text()
-		cache.pos++
-		if cache.pos == CacheSize {
-			lines <- cache.buf
-			cache.pos = 0
+	iter := 0
+	pool := linesPool.Get().(*[CacheSize]string)
+
+	for {
+		valid := scanner.Scan()
+		if iter == CacheSize || !valid {
+			lines <- pool
+			iter = 0
+			pool = linesPool.Get().(*[CacheSize]string)
+
 		}
+		if !valid {
+			break
+		}
+		r.nr++
+		pool[iter] = scanner.Text()
+		iter++
 	}
 
 	close(lines)

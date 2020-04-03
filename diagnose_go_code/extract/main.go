@@ -19,7 +19,7 @@ func main() {
 
 	r := csv.NewReader(csvfile)
 
-	txtfile, err := os.OpenFile("../csv_files/bench_test.txt", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0600)
+	txtfile, err := os.OpenFile("../csv_files/test.txt", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0600)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -27,6 +27,9 @@ func main() {
 
 	i, s, n := 0, 0, 0
 	ID := ""
+
+	firstRow, err := r.Read()
+	_ = firstRow
 
 	for {
 		record, err := r.Read()
