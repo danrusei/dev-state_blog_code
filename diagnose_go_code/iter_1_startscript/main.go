@@ -73,6 +73,9 @@ func (r *result) getStatistics(stream io.Reader) {
 		text := scanner.Text()
 
 		split := strings.Split(text, "#")
+		if len(split) < 2 {
+			continue
+		}
 		number := strings.TrimSpace(split[0])
 		description := strings.TrimSpace(split[1])
 
