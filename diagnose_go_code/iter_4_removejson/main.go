@@ -13,11 +13,10 @@ import (
 	"log"
 	"os"
 	"runtime"
-	"runtime/trace"
 	"strings"
 	"sync"
 
-	"github.com/Danr17/dev-state_blog_code/tree/master/diagnose_go_code/iter_2_goroutines/luhn"
+	"github.com/Danr17/dev-state_blog_code/tree/master/diagnose_go_code/iter_4_removejson/luhn"
 )
 
 type result struct {
@@ -31,14 +30,16 @@ type result struct {
 
 func main() {
 
-	tracefile, err := os.OpenFile("m.trace", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0600)
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer tracefile.Close()
+	/*
+		tracefile, err := os.OpenFile("m.trace", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0600)
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer tracefile.Close()
 
-	trace.Start(tracefile)
-	defer trace.Stop()
+		trace.Start(tracefile)
+		defer trace.Stop()
+	*/
 
 	file, err := os.Open("../csv_files/test.txt")
 	if err != nil {
@@ -57,12 +58,6 @@ func main() {
 }
 
 func (r *result) getStatistics(stream io.Reader, routines int) {
-
-	//region struct is used to Unmarshal the JSON
-	type region struct {
-		Continent string `json:"continent"`
-		Country   string `json:"country"`
-	}
 
 	countries := map[string]int{}
 	continents := map[string]string{}

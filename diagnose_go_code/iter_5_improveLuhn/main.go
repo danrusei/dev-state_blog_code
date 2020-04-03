@@ -8,7 +8,6 @@ package main
 
 import (
 	"bufio"
-	"encoding/json"
 	"fmt"
 	"io"
 	"log"
@@ -17,7 +16,7 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/Danr17/dev-state_blog_code/tree/master/diagnose_go_code/iter_3_contention/luhn"
+	"github.com/Danr17/dev-state_blog_code/tree/master/diagnose_go_code/iter_5_improveLuhn/luhn"
 )
 
 type result struct {
@@ -49,7 +48,7 @@ func main() {
 	defer file.Close()
 
 	results := result{}
-	routines := runtime.NumCPU()
+	routines := runtime.NumCPU() * 2
 	results.getStatistics(file, routines)
 
 	fmt.Printf("There are %d, out of %d, valid Luhn numbers. \n", results.validLuhn, results.nr)
@@ -59,12 +58,6 @@ func main() {
 }
 
 func (r *result) getStatistics(stream io.Reader, routines int) {
-
-	//region struct is used to Unmarshal the JSON
-	type region struct {
-		Continent string `json:"continent"`
-		Country   string `json:"country"`
-	}
 
 	countries := map[string]int{}
 	continents := map[string]string{}
@@ -90,6 +83,8 @@ func (r *result) getStatistics(stream io.Reader, routines int) {
 			for cache := range lines {
 
 				validLuhn := 0
+				continent := ""
+				country := ""
 
 				for _, text := range cache {
 
@@ -100,21 +95,19 @@ func (r *result) getStatistics(stream io.Reader, routines int) {
 					number := strings.TrimSpace(split[0])
 					description := strings.TrimSpace(split[1])
 
+					dep := strings.SplitN(description, "\"", 13)
+					continent = dep[3]
+					country = dep[11]
+
 					if luhn.Valid(number) {
 						validLuhn++
 					}
 
-					var reg region
-					err := json.Unmarshal([]byte(description), &reg)
-					if err != nil {
-						log.Println(err)
-					}
-
 					mutex.Lock()
-					countries[reg.Country]++
+					countries[country]++
 
-					if _, ok := continents[reg.Country]; !ok {
-						continents[reg.Country] = reg.Continent
+					if _, ok := continents[country]; !ok {
+						continents[country] = continent
 					}
 					mutex.Unlock()
 				}
