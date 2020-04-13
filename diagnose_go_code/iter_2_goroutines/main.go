@@ -21,12 +21,12 @@ import (
 )
 
 type result struct {
-	validLuhn     int
-	nr            int
-	hitsCountry   string
-	hits          int
-	hitsContinent string
-	hitsR         int
+	validLuhn         int
+	nrLines           int
+	country           string
+	hitsPerCountry    int
+	continent         string
+	countriesWithHits int
 }
 
 func main() {
@@ -52,9 +52,9 @@ func main() {
 	routines := runtime.NumCPU() * 2
 	results.getStatistics(file, routines)
 
-	fmt.Printf("There are %d, out of %d, valid Luhn numbers. \n", results.validLuhn, results.nr)
-	fmt.Printf("%s has the biggest # of visitors, with %d of hits. \n", results.hitsCountry, results.hits)
-	fmt.Printf("%s is the continent with most unique countries that accessed the site more than 1000 times. It has %d unique countries. \n", results.hitsContinent, results.hitsR)
+	fmt.Printf("There are %d, out of %d, valid Luhn numbers. \n", results.validLuhn, results.nrLines)
+	fmt.Printf("%s has the biggest # of visitors, with %d of hits. \n", results.country, results.hitsPerCountry)
+	fmt.Printf("%s is the continent with most unique countries that accessed the site more than 1000 times. It has %d unique countries. \n", results.continent, results.countriesWithHits)
 
 }
 
@@ -112,7 +112,7 @@ func (r *result) getStatistics(stream io.Reader, routines int) {
 
 	scanner := bufio.NewScanner(stream)
 	for scanner.Scan() {
-		r.nr++
+		r.nrLines++
 		lines <- scanner.Text()
 	}
 
@@ -120,9 +120,9 @@ func (r *result) getStatistics(stream io.Reader, routines int) {
 	wg.Wait()
 
 	for k, v := range countries {
-		if v > r.hits {
-			r.hits = v
-			r.hitsCountry = k
+		if v > r.hitsPerCountry {
+			r.hitsPerCountry = v
+			r.country = k
 		}
 	}
 
@@ -133,11 +133,11 @@ func (r *result) getStatistics(stream io.Reader, routines int) {
 		}
 	}
 
-	r.hitsR = 1
+	r.countriesWithHits = 1
 	for k, v := range regions {
-		if v > r.hitsR {
-			r.hitsContinent = k
-			r.hitsR = v
+		if v > r.countriesWithHits {
+			r.continent = k
+			r.countriesWithHits = v
 		}
 	}
 }
