@@ -1,0 +1,6 @@
+{
+    "title": "Static site with Hugo",
+    "short": "This is the first blog post from a series of posts where I'm going to show the options I tried to build my site. Hopefully, this will give you some hints on what it takes to build a simple site/blog using different approaches.",
+    "date": "10.05.2019",
+    "tags": ["hugo", "static", "golang"]
+    }

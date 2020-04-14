@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="https://storage.googleapis.com/dans-static/style.css">
+
+    <title>Item Collection</title>
+  </head>
+
+    <nav class="navbar navbar-default">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="/">
+            <img alt="Brand" src="https://storage.googleapis.com/dans-static/pills.png" height="42" width="42">
+          </a>
+        </div>
+        <div class="nav navbar-nav navbar-left" id="contact">
+              <button type="button" class="btn btn-info btn" data-toggle="modal" data-target="#contact-modal">Create New Item</button>
+        </div>
+        </div>
+      </div>
+    </nav>
+
+  <body>
+      <div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+              <div class="modal-content">
+              
+                  <div class="modal-header">
+                      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                      <h4 class="modal-title" id="myModalLabel">Confirm Delete</h4>
+                  </div>
+              
+                  <div class="modal-body">
+                      <p>You are about to delete <b><i class="title"></i></b> record, this procedure is irreversible.</p>
+                      <p>Do you want to proceed?</p>
+                      <p class="debug-url"></p>
+                  </div>
+                  
+                  <div class="modal-footer">
+                      <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                      <a class="btn btn-danger btn-ok">Delete</a>
+                  </div>
+              </div>
+          </div>
+      </div>
+
+      <div class="modal fade" id="confirm-detail" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+              <div class="modal-content">
+              
+                  <div class="modal-header">
+                      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                      <h4 class="modal-title" id="myModalLabel">Item Details</h4>
+                  </div>
+              
+                  <div class="modal-body">
+                      <p>Name: <b><i class="title"></i></b></p>
+                      <p>Target Age: <b><i class="targetage"></i></b></p>
+                      <p>Expiration date: <b><i class="expdate"></i></b></p>
+                      <p>Expiration days if open: <b><i class="expopen"></i></b></p>
+                      <p>Is Open ?: <b><i class="isopen"></i></b></p>
+                      <p>Opened date: <b><i class="opened"></i></b></p>
+                      <p>Is Valid?: <b><i class="isvalid"></i></b></p>
+                      <p>Days untill expire: <b><i class="daysvalid"></i></b></p>
+                      <p>Comments: <b><i class="comment"></i></b></p>
+                  </div>
+                  
+                  <div class="modal-footer">
+                      <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                  </div>
+              </div>
+          </div>
+      </div>
+      
+      <div id="contact-modal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <a class="close" data-dismiss="modal">×</a>
+              <h3>Create New Item</h3>
+            </div>
+            <form id="contactForm" name="contact" role="form">
+              <div class="modal-body">				
+                <div class="form-group">
+                  <label for="name">Name</label>
+                  <input type="text" name="name" class="form-control">
+                </div>
+                <div class="form-group">
+                  <label for="expdate">Expiration date (25-03-2022)</label>
+                  <input type="text" name="expdate" class="form-control">
+                </div>
+                <div class="form-group">
+                  <label for="targetage">Target age (child or adult)</label>
+                  <input type="text" name="targetage" class="form-control">
+                </div>
+                <div class="form-group">
+                  <label for="isopen">Is it open ? (true or false)</label>
+                  <input type="text" name="isopen" class="form-control">
+                </div>
+                <div class="form-group">
+                  <label for="expopen">Number of days to expire if open (20)</label>
+                  <input type="number" name="expopen" class="form-control">
+                </div>
+                <div class="form-group">
+                  <label for="opened">Opened date (25-03-2022)</label>
+                  <input type="text" name="opened" class="form-control">
+                </div>                
+                <div class="form-group">
+                  <label for="comment">Comments</label>
+                  <input type="text" name="comment" class="form-control">
+                </div>
+              </div>
+              <div class="modal-footer">					
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <input type="submit" class="btn btn-success" id="submit">
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+    <div class="container-fluid h-100">
+        <div class="row justify-content-center align-items-center h-100">
+            <div class="text-center">
+
+                <table class="table table-striped">
+                    <thead>
+                      <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Target</th>
+                        <th scope="col">Expiration date</th>
+                        <th scope="col">IsOpen</th>
+                        <th scope="col">Is Valid</th>
+                        <th scope="col">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {{range $i, $a := .Items}}
+                      <tr>
+                        <th scope="row">{{$i}}</th>
+                        <td style="text-align: left">{{$a.Name}}</td>
+                        <td style="text-align: left">{{$a.TargetAge}}</td>
+                        <td style="text-align: left">{{$a.ExpDate.Time.Format "Jan 02, 2006"}}</td>
+                        <td style="text-align: left">{{$a.IsOpen}}</td>
+                        <td style="text-align: left">{{$a.IsValid}}</td>
+                        <td style="text-align: left">
+
+                          <button class="btn btn-info" 
+                          data-record-id ={{$a.ID}} 
+                          data-record-created={{$a.Created.Time.Format "Jan 02, 2006"}}
+                          data-record-title={{$a.Name}} 
+                          data-record-expdate={{$a.ExpDate.Time.Format "Jan 02, 2006"}}
+                          data-record-expopen={{$a.ExpOpen}}
+                          data-record-targetage={{$a.TargetAge}}
+                          data-record-isopen={{$a.IsOpen}}
+                          data-record-opened={{$a.Opened.Time.Format "Jan 02, 2006"}}
+                          data-record-isvalid={{$a.IsValid}}
+                          data-record-daysvalid={{$a.DaysValid}}
+                          data-record-comment={{$a.Comment}}  
+                          data-toggle="modal" data-target="#confirm-detail">
+                              Detail
+                          </button>
+
+                          <button class="btn btn-danger" data-record-id ="{{$a.ID}}" data-record-title="{{$a.Name}}" data-href="http://localhost:8080/json/del?id={{$a.ID}}" data-toggle="modal" data-target="#confirm-delete">
+                            Delete
+                          </button>
+
+                        </td>
+                      </tr>
+                      {{end}}
+                    </tbody>
+                  </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Optional JavaScript -->
+
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <script src="https://storage.googleapis.com/dans-static/modal_delete.js"></script>
+    <script src="https://storage.googleapis.com/dans-static/modal_detail2.js"></script>
+    <script src="https://storage.googleapis.com/dans-static/modal_newitem1.js"></script>
+  </body>
+</html>
