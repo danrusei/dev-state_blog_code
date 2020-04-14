@@ -36,8 +36,11 @@ ok  	github.com/Danr17/dev-state_blog_code/tree/master/diagnose_go_code/iter_1_s
 
 ```
 
-Profiles and traces:
-
+CPU Profile:
 ![iter 1 cpu](imgs/iter1_cpu.png "Iter 1 CPU")
+
+MEM Profile:
 ![iter 1 mem](imgs/iter1_mem.png "Iter 1 MEM")
+
+Trace:
 ![iter 1 trace](imgs/iter1_trace.png "Iter 1 Trace")

@@ -1,2 +1,4 @@
-# items_rest_api
-Items Rest API - Backend 
+# Items Rest API - Backend 
+
+https://dev-state.com/posts/ui_rest_web/
+

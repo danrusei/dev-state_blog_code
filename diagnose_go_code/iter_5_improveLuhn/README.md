@@ -35,9 +35,14 @@ PASS
 ok  	github.com/Danr17/dev-state_blog_code/tree/master/diagnose_go_code/iter_5_improveLuhn	9.311s
 ```
 
-Profiles and traces:
-
+CPU Profile:
 ![iter 5 cpu](imgs/iter5_cpu.png "Iter 5 CPU")
+
+MEM Profile:
 ![iter 5 mem](imgs/iter5_mem.png "Iter 5 MEM")
+
+Trace:
 ![iter 5 trace](imgs/iter5_trace.png "Iter 5 Trace")
+
+Goroutine analysis:
 ![iter 5 trace](imgs/iter5_goroutines.png "Iter 5 Goroutines")

@@ -35,9 +35,14 @@ PASS
 ok  	github.com/Danr17/dev-state_blog_code/tree/master/diagnose_go_code/iter_4_removejson	13.709s
 ```
 
-Profiles and traces:
-
+CPU Profile:
 ![iter 4 cpu](imgs/iter4_cpu.png "Iter 4 CPU")
+
+MEM Profile:
 ![iter 4 mem](imgs/iter4_mem.png "Iter 4 MEM")
+
+Trace:
 ![iter 4 trace](imgs/iter4_trace.png "Iter 4 Trace")
+
+Goroutine analysis:
 ![iter 4 trace](imgs/iter4_goroutines.png "Iter 4 Goroutines")

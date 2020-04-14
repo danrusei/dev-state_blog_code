@@ -35,10 +35,14 @@ PASS
 ok  	github.com/Danr17/dev-state_blog_code/tree/master/diagnose_go_code/iter_3_contention	2.255s
 ```
 
-Profiles and traces:
-
+CPU Profile:
 ![iter 3 cpu](imgs/iter3_cpu.png "Iter 3 CPU")
-![iter 3 mem](imgs/iter3_mem.png "Iter 3 MEM")
-![iter 3 trace](imgs/iter3_trace.png "Iter 3 Trace")
-![iter 3 trace](imgs/iter3_goroutines.png "Iter 3 Goroutines")
 
+MEM Profile:
+![iter 3 mem](imgs/iter3_mem.png "Iter 3 MEM")
+
+Trace:
+![iter 3 trace](imgs/iter3_trace.png "Iter 3 Trace")
+
+Goroutine analysis:
+![iter 3 trace](imgs/iter3_goroutines.png "Iter 3 Goroutines")

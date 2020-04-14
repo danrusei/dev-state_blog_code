@@ -36,9 +36,14 @@ ok  	github.com/Danr17/dev-state_blog_code/tree/master/diagnose_go_code/iter_2_g
 
 ```
 
-Profiles and traces:
-
+CPU Profile:
 ![iter 2 cpu](imgs/iter2_cpu.png "Iter 2 CPU")
+
+MEM Profile:
 ![iter 2 mem](imgs/iter2_mem.png "Iter 2 MEM")
+
+Trace:
 ![iter 2 trace](imgs/iter2_trace.png "Iter 2 Trace")
+
+Goroutine analysis:
 ![iter 2 trace](imgs/iter2_goroutines.png "Iter 2 Goroutines")
