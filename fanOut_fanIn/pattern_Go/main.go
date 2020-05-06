@@ -30,11 +30,14 @@ func generator(done <-chan struct{}) <-chan int {
 func main() {
 
 	done := make(chan struct{})
+	i := 0
 
-	for i := 1; i < 10; i++ {
-		fmt.Println(generator(done))
+	for n := range generator(done) {
+		if i > 10 {
+			done <- struct{}{}
+		}
+		fmt.Println(n)
+		i++
 	}
-
-	done <- struct{}{}
 
 }
