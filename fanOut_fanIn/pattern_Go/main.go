@@ -2,11 +2,13 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"math/rand"
 	"sync"
 	"time"
 )
 
+//generator returns a random number in the range of 1 to 100
 func generator(done <-chan struct{}, iter int) <-chan int {
 	streamID := make(chan int)
 	r := rand.New(rand.NewSource(time.Now().UnixNano()))
@@ -26,22 +28,24 @@ func generator(done <-chan struct{}, iter int) <-chan int {
 	return streamID
 }
 
-func fanOutFunc(done <-chan struct{}, in <-chan int) <-chan string {
+//fanOutFunc returns in a channel the result of the called function.
+func fanOutFunc(done chan struct{}, in <-chan int) <-chan string {
 	resultValue := make(chan string)
 	go func() {
 		defer close(resultValue)
 		for n := range in {
 			select {
 			case <-done:
+				log.Println("funOutFunc has been canceled")
 				return
-			case resultValue <- fmt.Sprintf("here the function is called, %d", n):
-
+			case resultValue <- parse(done, n):
 			}
 		}
 	}()
 	return resultValue
 }
 
+//fanIn consolidate all the worker channels within one channel
 func fanIn(done <-chan struct{}, cs ...<-chan string) <-chan string {
 	var wg sync.WaitGroup
 	resultValue := make(chan string)
@@ -53,6 +57,7 @@ func fanIn(done <-chan struct{}, cs ...<-chan string) <-chan string {
 		for text := range c {
 			select {
 			case <-done:
+				log.Println("funIn has been canceled")
 				return
 			case resultValue <- text:
 			}
