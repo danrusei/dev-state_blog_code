@@ -51,7 +51,7 @@ func parse(done chan struct{}, id int) string {
 }
 
 func getBody(id int) ([]byte, error) {
-	site, err := url.Parse("https://test-apps-257216.appspot.com/comments/" + strconv.Itoa(id))
+	site, err := url.Parse("*/comments/" + strconv.Itoa(id))
 	if err != nil {
 		return nil, err
 	}
