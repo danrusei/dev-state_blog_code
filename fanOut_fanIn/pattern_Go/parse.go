@@ -51,14 +51,16 @@ func parse(done chan struct{}, id int) string {
 }
 
 func getBody(id int) ([]byte, error) {
-	site, err := url.Parse("https://jsonplaceholder.typicode.com/comments")
+	site, err := url.Parse("https://test-apps-257216.appspot.com/comments/" + strconv.Itoa(id))
 	if err != nil {
 		return nil, err
 	}
-	q := site.Query()
-	q.Set("postId", strconv.Itoa(id))
-	site.RawQuery = q.Encode()
-	log.Println("Getting: ", site.String())
+	/*
+		q := site.Query()
+		q.Set("postId", strconv.Itoa(id))
+		site.RawQuery = q.Encode()
+		log.Println("Getting: ", site.String())
+	*/
 
 	client := &http.Client{}
 	req, err := http.NewRequest("GET", site.String(), nil)
