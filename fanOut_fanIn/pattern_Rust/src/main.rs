@@ -1,13 +1,12 @@
 mod parse;
+use parse::parse;
 
-use rand::seq::SliceRandom;
-use rand::thread_rng;
 use std::io;
 use std::thread;
 use std::sync::mpsc::{channel, Receiver};
 use threadpool::ThreadPool;
-
-use parse::parse;
+use rand::seq::SliceRandom;
+use rand::thread_rng;
 
 fn generator(iters: u32) -> io::Result<Receiver<u32>> {
     let (gen_sender, gen_receiver) = channel();
