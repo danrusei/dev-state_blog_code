@@ -1,5 +1,5 @@
 [package]
-name = "pattern_Rust"
+name = "pattern_rust"
 version = "0.1.0"
 authors = ["rdan <dan.rusei@gmail.com>"]
 edition = "2018"
