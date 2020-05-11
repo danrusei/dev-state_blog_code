@@ -5,21 +5,17 @@ use std::io;
 use std::thread;
 use std::sync::mpsc::{channel, Receiver};
 use threadpool::ThreadPool;
-use rand::seq::SliceRandom;
-use rand::thread_rng;
+use rand::Rng;
 
 fn generator(iters: u32) -> io::Result<Receiver<u32>> {
     let (gen_sender, gen_receiver) = channel();
-    let mut vec: Vec<u32> = (1..100).collect();
-    vec.shuffle(&mut thread_rng());
+    let mut rng = rand::thread_rng();
+    let nums: Vec<u32> = (0..iters).map(|_| rng.gen_range(1,100)).collect();
     thread::spawn(move || {
-        for i in 0..iters {
-            if gen_sender.send(vec[i as usize].clone()).is_err() {
-                break;
-            }
+        for num in nums{
+            gen_sender.send(num).expect("Could not send the generated number over gen_sender channel")
         }
     });
-
     Ok(gen_receiver)
 }
 
