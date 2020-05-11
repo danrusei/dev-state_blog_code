@@ -9,15 +9,15 @@ use threadpool::ThreadPool;
 use rand::Rng;
 
 fn generator(n_jobs: u32) -> io::Result<Receiver<u32>> {
-    let (gen_sender, gen_receiver) = channel();
+    let (tx, rx) = channel();
     let mut rng = rand::thread_rng();
     let nums: Vec<u32> = (0..n_jobs).map(|_| rng.gen_range(1,100)).collect();
     thread::spawn(move || {
         for num in nums{
-            gen_sender.send(num).expect("Could not send the generated number over gen_sender channel")
+            tx.send(num).expect("Could not send the generated number over gen_sender channel")
         }
     });
-    Ok(gen_receiver)
+    Ok(rx)
 }
 
 fn fan_out(rx_gen: Receiver<u32>, pool: ThreadPool, n_jobs: u32) -> Result<Receiver<String>, Box<(dyn Error)>>{
@@ -34,28 +34,15 @@ fn fan_out(rx_gen: Receiver<u32>, pool: ThreadPool, n_jobs: u32) -> Result<Recei
     Ok(rx)
 }
 
-fn fan_in(rx_fan_out: Receiver<String>, n_jobs: u32) -> io::Result<()> {
+fn fan_in(rx_fan_out: Receiver<String>) -> Result<Receiver<String>, Box<(dyn Error)>>{
+    let (tx, rx) = channel();
+    thread::spawn(move || {
+        for value in rx_fan_out.iter() {
+            tx.send(value).expect("could not send the value");
+        }
+    });
 
-    let stats: Vec<String> = rx_fan_out.iter().take(n_jobs as usize).collect();
-    println!("{:#?}", stats);
-
-    Ok(())
-
-    //similar as with take
-    //drop(tx);
-    //assert_eq!(rx.iter().sum::<usize>(), 8);
-
-    // if would be a struct comming on the channel
-    //let result = rx.iter().map(|num| {
-    //    if let Some(num) = num {
-    //        Ok(num)
-    //    }else {
-    //        Err("our custom message")
-    //    }
-    //})
-    //.collect::<Result<Vec<u32>, ()>>()
-    //.expect("unable to get results");
-
+    Ok(rx)
 }
 
 fn main() {
@@ -65,5 +52,8 @@ fn main() {
 
     let rx_gen = generator(n_jobs).unwrap();
     let rx_fan_out = fan_out(rx_gen, pool, n_jobs).unwrap();
-    fan_in(rx_fan_out, n_jobs).unwrap();
+    for item in fan_in(rx_fan_out).unwrap() {
+        println!("{}",item)
+
+    }
 }

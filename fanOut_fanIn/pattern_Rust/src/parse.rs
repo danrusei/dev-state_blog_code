@@ -6,7 +6,8 @@ use url::Url;
 
 #[derive(Deserialize, Debug)]
 pub struct Post {
-    postId: u32,
+    #[serde(rename(deserialize = "postId"))]
+    post_id: u32,
     id: u32,
     name: String,
     email: String,
@@ -24,7 +25,7 @@ pub fn parse(id: u32) -> Result<String, Box<(dyn Error)>> {
     for post in posts {
         if post.body.len() > longest_post {
             longest_post = post.body.len();
-            longest_post_id = post.postId;
+            longest_post_id = post.post_id;
             longest_post_email = post.email;
         }
     }
