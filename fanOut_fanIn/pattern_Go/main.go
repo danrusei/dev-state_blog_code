@@ -38,7 +38,7 @@ func fanOutFunc(done chan struct{}, in <-chan int) <-chan string {
 			case <-done:
 				log.Println("funOutFunc has been canceled")
 				return
-			case resultValue <- parse(done, n):
+			case resultValue <- parse(done, n) + " _ Processed":
 			}
 		}
 	}()
@@ -78,14 +78,17 @@ func fanIn(done <-chan struct{}, cs ...<-chan string) <-chan string {
 }
 
 func main() {
+	nWorkers := 4
+	nJobs := 8
+
 	done := make(chan struct{})
 	defer close(done)
 
-	fanOut := make([]<-chan string, 8)
+	fanOut := make([]<-chan string, nWorkers)
 
 	// fanOut defines the number of concurrent "fanoutFunc" functions (goroutines)
-	for i := 0; i < 8; i++ {
-		fanOut[i] = fanOutFunc(done, generator(done, 1))
+	for i := 0; i < nWorkers; i++ {
+		fanOut[i] = fanOutFunc(done, generator(done, nJobs/nWorkers))
 	}
 
 	//this pipeline yields the result of each channel of the fanOut slice

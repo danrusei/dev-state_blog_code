@@ -37,7 +37,7 @@ fn fan_out(rx_gen: Receiver<u32>, pool: ThreadPool, n_jobs: u32) -> Result<Recei
 fn fan_in(rx_fan_out: Receiver<String>) -> Result<Receiver<String>, Box<(dyn Error)>>{
     let (tx, rx) = channel();
     thread::spawn(move || {
-        for value in rx_fan_out.iter() {
+        for value in rx_fan_out.iter().map(|value| format!("{} _ Processed", value) ) {
             tx.send(value).expect("could not send the value");
         }
     });
