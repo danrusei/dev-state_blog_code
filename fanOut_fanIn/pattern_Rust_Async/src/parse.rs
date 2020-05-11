@@ -29,7 +29,10 @@ pub fn parse(id: u32) -> Result<String, Box<(dyn Error)>> {
         }
     }
 
-    let the_result = format!("{} {} {}", longest_post_id, longest_post_email, longest_post);
+    let the_result = format!(
+        "{} {} {}",
+        longest_post_id, longest_post_email, longest_post
+    );
 
     Ok(the_result)
 }
@@ -39,6 +42,7 @@ fn get_body(id: u32) -> Result<String, Box<(dyn Error)>> {
     let base = Url::parse(BASE).expect("hardcoded URL is known to be valid");
     let site = base.join(&format!("/comments/{}", id))?;
 
+    // use surf crate to get the body
 
     Ok(body)
 }
