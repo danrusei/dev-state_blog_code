@@ -2,15 +2,16 @@ mod parse;
 use parse::parse;
 
 use std::io;
+use std::error::Error;
 use std::thread;
 use std::sync::mpsc::{channel, Receiver};
 use threadpool::ThreadPool;
 use rand::Rng;
 
-fn generator(iters: u32) -> io::Result<Receiver<u32>> {
+fn generator(n_jobs: u32) -> io::Result<Receiver<u32>> {
     let (gen_sender, gen_receiver) = channel();
     let mut rng = rand::thread_rng();
-    let nums: Vec<u32> = (0..iters).map(|_| rng.gen_range(1,100)).collect();
+    let nums: Vec<u32> = (0..n_jobs).map(|_| rng.gen_range(1,100)).collect();
     thread::spawn(move || {
         for num in nums{
             gen_sender.send(num).expect("Could not send the generated number over gen_sender channel")
@@ -19,22 +20,23 @@ fn generator(iters: u32) -> io::Result<Receiver<u32>> {
     Ok(gen_receiver)
 }
 
-fn fan_out(rx_gen: Receiver<u32>, pool: ThreadPool, n_jobs: u32) -> io::Result<Receiver<u32>>{
+fn fan_out(rx_gen: Receiver<u32>, pool: ThreadPool, n_jobs: u32) -> Result<Receiver<String>, Box<(dyn Error)>>{
     let (tx, rx) = channel();
     for _ in 0..n_jobs {
         let tx = tx.clone();
         let n = rx_gen.recv().unwrap();
         pool.execute(move || {
-            tx.send(n)
+            let parse_result = parse(n).unwrap();
+            tx.send(parse_result)
                 .expect("channel will be there waiting for the pool");
         });
     }
     Ok(rx)
 }
 
-fn fan_in(rx_fan_out: Receiver<u32>, n_jobs: u32) -> io::Result<()> {
+fn fan_in(rx_fan_out: Receiver<String>, n_jobs: u32) -> io::Result<()> {
 
-    let stats: Vec<u32> = rx_fan_out.iter().take(n_jobs as usize).collect();
+    let stats: Vec<String> = rx_fan_out.iter().take(n_jobs as usize).collect();
     println!("{:#?}", stats);
 
     Ok(())
@@ -64,6 +66,4 @@ fn main() {
     let rx_gen = generator(n_jobs).unwrap();
     let rx_fan_out = fan_out(rx_gen, pool, n_jobs).unwrap();
     fan_in(rx_fan_out, n_jobs).unwrap();
-
-    parse()
 }
