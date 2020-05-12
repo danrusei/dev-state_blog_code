@@ -22,7 +22,7 @@ async fn generator_other(n_jobs: u32) -> Result<u32, Error> {
 */
 
 async fn generator(n_jobs: u32) -> Result<Receiver<u32>, Error> {
-    let (mut tx, rx) = channel(0);
+    let (mut tx, rx) = channel(8);
     let mut rng = rand::thread_rng();
     let nums: Vec<u32> = (0..n_jobs).map(|_| rng.gen_range(1, 100)).collect();
     task::spawn(async move {
@@ -35,7 +35,7 @@ async fn generator(n_jobs: u32) -> Result<Receiver<u32>, Error> {
 }
 
 async fn fan_out(mut rx_gen: Receiver<u32>) -> Result<Receiver<String>, Error> {
-    let (tx, rx) = channel(0);
+    let (tx, rx) = channel(8);
 
     let mut tasks = vec![];
     while let Some(num) = rx_gen.try_next()? {
@@ -48,6 +48,8 @@ async fn fan_out(mut rx_gen: Receiver<u32>) -> Result<Receiver<String>, Error> {
         });
         tasks.push(task);
     }
+    // !!! not sure about this
+    //rx_gen.close();
 
     for task in tasks.into_iter() {
         task.await;
@@ -57,7 +59,7 @@ async fn fan_out(mut rx_gen: Receiver<u32>) -> Result<Receiver<String>, Error> {
 }
 
 async fn fan_in(mut rx_fan_out: Receiver<String>) -> Result<Receiver<String>, Error> {
-    let (mut tx, rx) = channel(0);
+    let (mut tx, rx) = channel(8);
     task::spawn(async move {
         while let Ok(value) = rx_fan_out.try_next() {
             let processed_value: String = match value {
@@ -67,6 +69,8 @@ async fn fan_in(mut rx_fan_out: Receiver<String>) -> Result<Receiver<String>, Er
             tx.try_send(processed_value)
                 .expect("Could not send the processed string over the channel");
         }
+        // !!! not sure about this
+        //rx_fan_out.close();
     });
 
     Ok(rx)
@@ -83,6 +87,8 @@ async fn main() -> Result<(), Error> {
         };
         println!("{}", eu);
     }
+    // !!! not sure about this
+    //rx_fan_in.close();
     /*
         let rx_gen = generator(n_jobs).await?;
         let rx_fan_out = fan_out(rx_gen).await?;
