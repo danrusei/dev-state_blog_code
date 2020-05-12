@@ -13,5 +13,5 @@ serde_json = "1.0"
 url = "2.1"
 surf = "1.0"
 async-std = {version = "1.5", features = ["attributes"]}
-futures-channel = "0.3"
+futures = "0.3"
 
