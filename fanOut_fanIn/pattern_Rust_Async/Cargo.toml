@@ -1,5 +1,5 @@
 [package]
-name = "pattern_Rust_Async"
+name = "pattern_rust_async"
 version = "0.1.0"
 authors = ["rdan <dan.rusei@gmail.com>"]
 edition = "2018"
@@ -11,4 +11,7 @@ rand = "0.7"
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 url = "2.1"
+surf = "1.0"
+async-std = {version = "1.5", features = ["attributes"]}
+futures-channel = "0.3"
 

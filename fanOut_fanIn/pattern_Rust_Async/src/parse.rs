@@ -1,7 +1,9 @@
 use serde::Deserialize;
 use serde_json;
-use std::error::Error;
 use url::Url;
+use surf;
+
+pub type Error = Box<(dyn std::error::Error + Send + Sync + 'static)>;
 
 #[derive(Deserialize, Debug)]
 pub struct Post {
@@ -13,8 +15,8 @@ pub struct Post {
     body: String,
 }
 
-pub fn parse(id: u32) -> Result<String, Box<(dyn Error)>> {
-    let body: String = get_body(id)?;
+pub async fn parse(id: u32) -> Result<String, Error> {
+    let body: String = get_body(id).await?;
     let posts: Vec<Post> = serde_json::from_str(&body)?;
 
     let mut longest_post = 0;
@@ -37,12 +39,12 @@ pub fn parse(id: u32) -> Result<String, Box<(dyn Error)>> {
     Ok(the_result)
 }
 
-fn get_body(id: u32) -> Result<String, Box<(dyn Error)>> {
+async fn get_body(id: u32) -> Result<String, Error> {
     const BASE: &'static str = "https://test-apps-257216.ew.r.appspot.com/";
     let base = Url::parse(BASE).expect("hardcoded URL is known to be valid");
     let site = base.join(&format!("/comments/{}", id))?;
 
-    // use surf crate to get the body
+    let body = surf::get(site).recv_string().await?;
 
     Ok(body)
 }
