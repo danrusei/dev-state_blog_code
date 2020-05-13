@@ -13,7 +13,6 @@ async fn generator(n_jobs: u32) -> Result<Receiver<u32>, Error> {
     let nums: Vec<u32> = (0..n_jobs).map(|_| rng.gen_range(1, 100)).collect();
     task::spawn(async move {
         for num in nums {
-            println!("I'm sending from generator");
             tx.send(num).await
                 .expect("Could not send the generated number over the channel")
         }
@@ -21,24 +20,23 @@ async fn generator(n_jobs: u32) -> Result<Receiver<u32>, Error> {
     Ok(rx)
 }
 
-async fn fan_out(mut rx_gen: Receiver<u32>) -> Result<Receiver<String>, Error> {
-    let (tx, rx) = channel(0);
+async fn fan_out(mut rx_gen: Receiver<u32>, n_jobs: u32) -> Result<Receiver<String>, Error> {
+    let (tx, rx) = channel(n_jobs as usize);
 
     let mut handles = Vec::new();
     loop {
         match rx_gen.next().await {
             Some(num) => {
                 let mut tx_num = tx.clone();
-                let task = task::spawn(async move {
-                    println!("I'm within a task from fanout");
+                let handle = task::spawn(async move {
                     let rep = parse(num).await.unwrap();
-                    tx_num
-                        .send(rep).await
-                        .expect("Could not send the parsed string over the channel");
+                    tx_num.send(rep).await
+                    .expect("Could not send the parsed string over the channel");
+                        
                 });
-                handles.push(task);
+                handles.push(handle);
             }
-            None => break,
+            _ => break,
         }
     }
 
@@ -56,14 +54,11 @@ async fn fan_in(mut rx_fan_out: Receiver<String>) -> Result<Receiver<String>, Er
             match rx_fan_out.next().await {
                 Some(value) => {
                     let processed_value = format!("{} _ Processed", value);
-
-                    println!("I'm collecting in FanIn");
-
                     tx.send(processed_value).await
                         .expect("Could not send the processed string over the channel");
                 }
-                None => break,
-            }
+                _ => break,
+            }  
         }
     });
 
@@ -73,7 +68,8 @@ async fn fan_in(mut rx_fan_out: Receiver<String>) -> Result<Receiver<String>, Er
 #[async_std::main]
 async fn main() -> Result<(), Error> {
     let n_jobs = 8;
-    let mut rx_fan_in = fan_in(fan_out(generator(n_jobs).await?).await?).await?;
+    let mut rx_fan_in = fan_in(fan_out(generator(n_jobs).await?, n_jobs).await?).await?;
+    
     loop {
         match rx_fan_in.next().await {
             Some(value) => {
@@ -82,5 +78,6 @@ async fn main() -> Result<(), Error> {
             None => break,
         }
     }
+
     Ok(())
 }
