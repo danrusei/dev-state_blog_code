@@ -40,7 +40,7 @@ pub async fn parse(id: u32) -> Result<String, Error> {
 }
 
 async fn get_body(id: u32) -> Result<String, Error> {
-    const BASE: &'static str = "https://test-apps-257216.ew.r.appspot.com/";
+    const BASE: &'static str = "https://your_server_here/";
     let base = Url::parse(BASE).expect("hardcoded URL is known to be valid");
     let site = base.join(&format!("/comments/{}", id))?;
 
