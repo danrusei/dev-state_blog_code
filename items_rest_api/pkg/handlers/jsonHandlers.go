@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/Danr17/items-rest-api/pkg/model"
+	"github.com/danrusei/items-rest-api/pkg/model"
 )
 
 func (h *Handlers) jsonHandleList() http.HandlerFunc {

@@ -15,7 +15,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/Danr17/dev-state_blog_code/tree/master/diagnose_go_code/iter_1_startscript/luhn"
+	"github.com/danrusei/dev-state_blog_code/tree/master/diagnose_go_code/iter_1_startscript/luhn"
 )
 
 type result struct {

@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"cloud.google.com/go/firestore"
-	"github.com/Danr17/items-rest-api/pkg/model"
+	"github.com/danrusei/items-rest-api/pkg/model"
 	"google.golang.org/api/iterator"
 )
 

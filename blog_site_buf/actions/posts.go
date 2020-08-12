@@ -1,7 +1,7 @@
 package actions
 
 import (
-	"github.com/Danr17/blog_site_buf/models"
+	"github.com/danrusei/blog_site_buf/models"
 	"github.com/gobuffalo/buffalo"
 	"github.com/gobuffalo/pop"
 	"github.com/pkg/errors"

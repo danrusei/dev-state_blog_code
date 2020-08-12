@@ -3,7 +3,7 @@ package main
 import (
 	"log"
 
-	"github.com/Danr17/blog_site_buf/actions"
+	"github.com/danrusei/blog_site_buf/actions"
 )
 
 // main is the starting point for your Buffalo application.

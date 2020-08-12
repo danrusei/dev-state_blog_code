@@ -19,20 +19,20 @@ Benchmarks:
 $ go test -bench GetStatistics -cpuprofile cpu.pprof
 goos: linux
 goarch: amd64
-pkg: github.com/Danr17/dev-state_blog_code/tree/master/diagnose_go_code/iter_5_improveLuhn
+pkg: github.com/danrusei/dev-state_blog_code/tree/master/diagnose_go_code/iter_5_improveLuhn
 BenchmarkGetStatistics-8   	     118	   8545421 ns/op
 PASS
-ok  	github.com/Danr17/dev-state_blog_code/tree/master/diagnose_go_code/iter_5_improveLuhn	8.464s
+ok  	github.com/danrusei/dev-state_blog_code/tree/master/diagnose_go_code/iter_5_improveLuhn	8.464s
 
 ########
 
 $ go test -bench GetStatistics -memprofile mem.pprof -benchmem
 goos: linux
 goarch: amd64
-pkg: github.com/Danr17/dev-state_blog_code/tree/master/diagnose_go_code/iter_5_improveLuhn
+pkg: github.com/danrusei/dev-state_blog_code/tree/master/diagnose_go_code/iter_5_improveLuhn
 BenchmarkGetStatistics-8   	     129	   8273411 ns/op	12407446 B/op	  105717 allocs/op
 PASS
-ok  	github.com/Danr17/dev-state_blog_code/tree/master/diagnose_go_code/iter_5_improveLuhn	9.311s
+ok  	github.com/danrusei/dev-state_blog_code/tree/master/diagnose_go_code/iter_5_improveLuhn	9.311s
 ```
 
 CPU Profile:  

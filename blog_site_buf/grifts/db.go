@@ -3,7 +3,7 @@ package grifts
 import (
 	"io/ioutil"
 
-	"github.com/Danr17/blog_site_buf/models"
+	"github.com/danrusei/blog_site_buf/models"
 	"github.com/markbates/grift/grift"
 )
 

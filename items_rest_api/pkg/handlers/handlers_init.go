@@ -3,7 +3,7 @@ package handlers
 import (
 	"log"
 
-	"github.com/Danr17/items-rest-api/pkg/storage"
+	"github.com/danrusei/items-rest-api/pkg/storage"
 )
 
 //Handlers host the dependencies

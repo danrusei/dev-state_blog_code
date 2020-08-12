@@ -15,9 +15,9 @@ import (
 	"cloud.google.com/go/firestore"
 	"google.golang.org/api/option"
 
-	"github.com/Danr17/items-rest-api/pkg/handlers"
-	"github.com/Danr17/items-rest-api/pkg/storage"
-	"github.com/Danr17/items-rest-api/pkg/storage/dbfirestore"
+	"github.com/danrusei/items-rest-api/pkg/handlers"
+	"github.com/danrusei/items-rest-api/pkg/storage"
+	"github.com/danrusei/items-rest-api/pkg/storage/dbfirestore"
 )
 
 var (

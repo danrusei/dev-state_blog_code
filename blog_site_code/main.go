@@ -7,7 +7,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/Danr17/blog_site_code/site"
+	"github.com/danrusei/blog_site_code/site"
 	"github.com/gorilla/mux"
 )
 

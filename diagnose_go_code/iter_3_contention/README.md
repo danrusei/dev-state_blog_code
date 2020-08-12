@@ -19,20 +19,20 @@ Benchmarks:
 $ go test -bench GetStatistics -cpuprofile cpu.pprof
 goos: linux
 goarch: amd64
-pkg: github.com/Danr17/dev-state_blog_code/tree/master/diagnose_go_code/iter_3_contention
+pkg: github.com/danrusei/dev-state_blog_code/tree/master/diagnose_go_code/iter_3_contention
 BenchmarkGetStatistics-8   	       1	2125320341 ns/op
 PASS
-ok  	github.com/Danr17/dev-state_blog_code/tree/master/diagnose_go_code/iter_3_contention	2.452s
+ok  	github.com/danrusei/dev-state_blog_code/tree/master/diagnose_go_code/iter_3_contention	2.452s
 
 ########
 
 $ go test -bench GetStatistics -memprofile mem.pprof -benchmem
 goos: linux
 goarch: amd64
-pkg: github.com/Danr17/dev-state_blog_code/tree/master/diagnose_go_code/iter_3_contention
+pkg: github.com/danrusei/dev-state_blog_code/tree/master/diagnose_go_code/iter_3_contention
 BenchmarkGetStatistics-8   	       1	2106188910 ns/op	2845736048 B/op	25685616 allocs/op
 PASS
-ok  	github.com/Danr17/dev-state_blog_code/tree/master/diagnose_go_code/iter_3_contention	2.255s
+ok  	github.com/danrusei/dev-state_blog_code/tree/master/diagnose_go_code/iter_3_contention	2.255s
 ```
 
 CPU Profile:  

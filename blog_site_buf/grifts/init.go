@@ -1,7 +1,7 @@
 package grifts
 
 import (
-	"github.com/Danr17/blog_site_buf/actions"
+	"github.com/danrusei/blog_site_buf/actions"
 	"github.com/gobuffalo/buffalo"
 )
 

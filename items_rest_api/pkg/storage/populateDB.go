@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/Danr17/items-rest-api/pkg/model"
+	"github.com/danrusei/items-rest-api/pkg/model"
 )
 
 // PopulateItems insert the items in empty database

@@ -1,4 +1,4 @@
-module github.com/Danr17/dev-state_blog_code/tree/master/fanOut_fanIn/server
+module github.com/danrusei/dev-state_blog_code/tree/master/fanOut_fanIn/server
 
 go 1.14
 

@@ -17,7 +17,7 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/Danr17/dev-state_blog_code/tree/master/diagnose_go_code/iter_2_goroutines/luhn"
+	"github.com/danrusei/dev-state_blog_code/tree/master/diagnose_go_code/iter_2_goroutines/luhn"
 )
 
 type result struct {

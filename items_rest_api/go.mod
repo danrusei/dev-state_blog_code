@@ -1,4 +1,4 @@
-module github.com/Danr17/items-rest-api
+module github.com/danrusei/items-rest-api
 
 go 1.12
 

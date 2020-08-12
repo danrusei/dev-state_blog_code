@@ -19,20 +19,20 @@ Benchmarks:
 $ go test -bench GetStatistics -cpuprofile cpu.pprof
 goos: linux
 goarch: amd64
-pkg: github.com/Danr17/dev-state_blog_code/tree/master/diagnose_go_code/iter_1_startscript
+pkg: github.com/danrusei/dev-state_blog_code/tree/master/diagnose_go_code/iter_1_startscript
 BenchmarkGetStatistics-8   	       1	9367019288 ns/op
 PASS
-ok  	github.com/Danr17/dev-state_blog_code/tree/master/diagnose_go_code/iter_1_startscript	9.538s
+ok  	github.com/danrusei/dev-state_blog_code/tree/master/diagnose_go_code/iter_1_startscript	9.538s
 
 ########
 
 $ go test -bench GetStatistics -memprofile mem.pprof -benchmem
 goos: linux
 goarch: amd64
-pkg: github.com/Danr17/dev-state_blog_code/tree/master/diagnose_go_code/iter_1_startscript
+pkg: github.com/danrusei/dev-state_blog_code/tree/master/diagnose_go_code/iter_1_startscript
 BenchmarkGetStatistics-8   	       1	9068461723 ns/op	2817476848 B/op	25624358 allocs/op
 PASS
-ok  	github.com/Danr17/dev-state_blog_code/tree/master/diagnose_go_code/iter_1_startscript	9.072s
+ok  	github.com/danrusei/dev-state_blog_code/tree/master/diagnose_go_code/iter_1_startscript	9.072s
 
 ```
 

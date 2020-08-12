@@ -1,4 +1,4 @@
-module github.com/Danr17/assistant_webhook
+module github.com/danrusei/assistant_webhook
 
 go 1.13
 

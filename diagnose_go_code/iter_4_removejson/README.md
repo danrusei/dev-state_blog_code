@@ -19,20 +19,20 @@ Benchmarks:
 $ go test -bench GetStatistics -cpuprofile cpu.pprof
 goos: linux
 goarch: amd64
-pkg: github.com/Danr17/dev-state_blog_code/tree/master/diagnose_go_code/iter_4_removejson
+pkg: github.com/danrusei/dev-state_blog_code/tree/master/diagnose_go_code/iter_4_removejson
 BenchmarkGetStatistics-8   	      64	  16201405 ns/op
 PASS
-ok  	github.com/Danr17/dev-state_blog_code/tree/master/diagnose_go_code/iter_4_removejson	11.731s
+ok  	github.com/danrusei/dev-state_blog_code/tree/master/diagnose_go_code/iter_4_removejson	11.731s
 
 ########
 
 $ go test -bench GetStatistics -memprofile mem.pprof -benchmem
 goos: linux
 goarch: amd64
-pkg: github.com/Danr17/dev-state_blog_code/tree/master/diagnose_go_code/iter_4_removejson
+pkg: github.com/danrusei/dev-state_blog_code/tree/master/diagnose_go_code/iter_4_removejson
 BenchmarkGetStatistics-8   	      84	  12098290 ns/op	27447364 B/op	  248510 allocs/op
 PASS
-ok  	github.com/Danr17/dev-state_blog_code/tree/master/diagnose_go_code/iter_4_removejson	13.709s
+ok  	github.com/danrusei/dev-state_blog_code/tree/master/diagnose_go_code/iter_4_removejson	13.709s
 ```
 
 CPU Profile:  
