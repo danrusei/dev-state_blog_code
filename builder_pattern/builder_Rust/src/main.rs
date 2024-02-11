@@ -17,7 +17,7 @@ fn main() -> Result<()> {
 
     // Create the Car using non-consuming Pattern
 
-    let equip = Equiped::EquipedSilver;
+    let equip = Equiped::EquipedPlatinum;
 
     let mut car_builder = Car2Builder::new(equip);
 

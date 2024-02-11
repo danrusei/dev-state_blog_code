@@ -43,12 +43,12 @@ impl Car2Builder {
         let car_engine = self
             .car
             .car_engine
-            .take()
+            .clone()
             .ok_or_else(|| anyhow!("You need to select an Engine type"))?;
 
         Ok(Car2 {
-            equip: std::mem::take(&mut self.car.equip),
-            color: Some(std::mem::take(&mut self.car.color).unwrap_or("White".to_owned())),
+            equip: self.car.equip.clone(),
+            color: Some(self.car.color.clone().unwrap_or("White".to_owned())),
             car_engine: Some(car_engine),
             ..Default::default()
         })
