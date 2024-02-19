@@ -1,0 +1,4 @@
+carrots 5 12.05.2024
+salad 4 12.05.2024
+broccoli 3 14.05.2024
+spinach 6 14.05.2024
