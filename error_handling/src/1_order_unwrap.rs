@@ -1,5 +1,5 @@
 use chrono::NaiveDate;
-use std::{env, fs};
+use std::{env, fmt, fs};
 
 #[derive(Debug)]
 struct UserCommand {
@@ -33,8 +33,17 @@ fn main() {
         commands.push(command);
     }
 
-    println!(
-        "Your command was processed and it is ready for delivery. The ordered items: {:#?}",
-        commands
-    );
+    println!("\nYour command was processed and it is ready for delivery. The ordered items:\n");
+
+    commands.iter().for_each(|cmd| println!(" * {} ", cmd));
+}
+
+impl fmt::Display for UserCommand {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(
+            f,
+            "{} {} - to be delivered on {}",
+            self.quantity, self.product, self.delivery_date
+        )
+    }
 }

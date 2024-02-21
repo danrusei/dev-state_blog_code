@@ -7,3 +7,29 @@ edition = "2021"
 
 [dependencies]
 chrono = "0.4"
+anyhow = "1.0"
+thiserror ="1.0"
+
+[[bin]]
+name = "order_unwrap"
+path = "src/1_order_unwrap.rs"
+
+[[bin]]
+name = "order_expect"
+path = "src/2_order_expect.rs"
+
+[[bin]]
+name = "order_combinators"
+path = "src/3_order_combinators.rs"
+
+[[bin]]
+name = "order_anyhow"
+path = "src/4_order_anyhow.rs"
+
+[[bin]]
+name = "order_custom_error"
+path = "src/5_order_custom_error.rs"
+
+[[bin]]
+name = "order_thiserror"
+path = "src/6_order_thiserror.rs"
